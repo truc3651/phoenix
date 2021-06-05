@@ -1,0 +1,13 @@
+@layout('layouts/app')
+
+@section('title')
+  {{title}}
+@endsection
+
+@section('content')
+  <div class="container mx-auto">
+    <img src="{{post.poster_url}}" class="img-fluid img-thumbnail mx-auto d-block" alt="" width="375" height="270">
+    <h4 class="text-center my-3">{{post.thumbnail}}</h4>
+    <div id="description" data-description="{{post.description}}"></div>
+</div>
+@endsection

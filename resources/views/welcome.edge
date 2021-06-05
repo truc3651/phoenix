@@ -1,0 +1,80 @@
+@layout('layouts/app')
+
+@section('title')
+  phoenix
+@endsection
+
+@section('content')
+  <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="action">Create post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="postsForm" action="/posts" method="POST">
+            <input type="hidden" id="_id" name="_id">
+            <input type="hidden" id="poster_url" name="poster_url">
+            <div class="mb-3">
+              <label for="link" class="form-label">Youtube link</label>
+              <input type="text" class="form-control" id="link" name="link" oninput="fetchYoutubeVideo(this)" autofocus/>
+              <small class="text-danger" id="linkError"></small>
+            </div>
+            <div class="mb-3">
+              <label for="link" class="form-label">Preview</label>
+              <div>
+                <img src="" alt="preview_photo" id="previewPhoto" class="img-thumbnail" width="250" height="180">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="thumbnail" class="form-label">Thumbnail</label>
+              <input type="text" class="form-control" id="thumbnail" name="thumbnail"/>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control richtext" id="description" name="description" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary" type="submit" form="postsForm">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-5">
+    {{ elIf('<div class="alert alert-danger" role="alert">$self</div>', getErrorFor('database'), hasErrorFor('database')) }}
+    <button class="btn btn-primary" onclick="createPost()" data-bs-toggle="modal" data-bs-target="#postModal">
+      Create post
+    </button>
+    <div class="my-3 d-flex flex-wrap">
+      @each(post in posts)
+        <div class="card me-3" style="width: 18rem;">
+          <img onclick="location.href='/post/{{post._id}}'" src="{{post.poster_url}}" class="card-img-top" alt="...">
+          <div class="card-body" onclick="location.href='/{{post._id}}'">
+            <h5 class="card-title">{{post.thumbnail}}</h5>
+          </div>
+          @if(auth.user.fullname)
+            <div class="card-footer d-flex ">
+              <button class="btn btn-sm btn-secondary me-2"
+              data-bs-toggle="modal" data-bs-target="#postModal"
+              onclick="editPost('{{post._id}}', '{{post.link}}', '{{post.poster_url}}', '{{post.thumbnail}}', '{{post.description}}')">
+                edit
+              </button>
+              <form action="/posts/{{post._id}}?_method=DELETE" method="POST">
+                <button
+                type="submit" class="btn btn-sm btn-danger"
+                onclick="return confirm('Are you sure wanna delete this record?')">
+                  delete
+                </button>
+              </form>
+            </div>
+          @endif
+        </div>
+      @endeach
+    </div>
+  </div>
+@endsection

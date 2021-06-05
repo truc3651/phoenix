@@ -1,0 +1,32 @@
+@layout('layouts/app')
+
+@section('title')
+  profile
+@endsection
+
+@section('content')
+  <div class="container card" style="width: 20rem;">
+    <h3 class="mt-2">Profile</h3>
+    {{ elIf('<span class="text-danger">$self</span>', getErrorFor('database'), hasErrorFor('database')) }}
+    <form class="my-3" action="update-profile?_method=PATCH" method="POST">
+      <div class="mb-3">
+        <label for="fullname" class="form-label">Fullname</label>
+        <input type="text" class="form-control" value="{{ old('fullname', auth.user.fullname) }}" name="fullname" id="fullname">
+        {{ elIf('<span class="text-danger">$self</span>', getErrorFor('fullname'), hasErrorFor('fullname')) }}
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" value="{{ old('email', auth.user.email) }}" name="email" id="email" aria-describedby="emailHelp">
+        {{ elIf('<span class="text-danger">$self</span>', getErrorFor('email'), hasErrorFor('email')) }}
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" name="password" id="password">
+        {{ elIf('<span class="text-danger">$self</span>', getErrorFor('password'), hasErrorFor('password')) }}
+      </div>
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" type="submit">Save changes</button>
+      </div>
+    </form>
+  </div>
+@endsection
